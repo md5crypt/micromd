@@ -47,7 +47,7 @@ this.micromd = function(input){
 			buffer += m[11]+'<br/>';
 		}else{
 			if(buffer){
-				output += pp(pp('<p>'+buffer.slice(0,-5)+'</p>'));
+				output += pp('<p>'+buffer.slice(0,-5)+'</p>');
 				buffer = '';
 			}
 			//list: 5 - level; 6 - list type; 7 - text
@@ -63,11 +63,11 @@ this.micromd = function(input){
 					output += '<'+tag+'>';
 					stack.push('</'+tag+'>');
 				}
-				output += pp(pp(m[6]?'<li>'+m[7]+'</li>':m[9]));
+				output += pp(m[6]?'<li>'+m[7]+'</li>':m[9]);
 			}if(m[2]){ //1 - language; 2 - code
 				output += '<pre class="language-'+(m[1]||'none')+'"><code>'+escapeHtml(m[2]).replace(/\\/g,'\\5c\\')+'</code></pre>';
 			}else if(m[3]){ //3 - number; 4 - text
-				output += pp(pp('<h'+m[3].length+'>'+m[4]+'</h'+m[3].length+'>'));
+				output += pp('<h'+m[3].length+'>'+m[4]+'</h'+m[3].length+'>');
 			}else if(m[10]){ //10 - hr
 				output += '<hr/>';
 			}
@@ -76,7 +76,7 @@ this.micromd = function(input){
 	while(stack.length)
 		output += stack.pop();
 	if(buffer)
-		output += pp(pp('<p>'+buffer.slice(0,-5)+'</p>'));
+		output += pp('<p>'+buffer.slice(0,-5)+'</p>');
 	return output.replace(/\\(..)/g,function(m,g){
 		return String.fromCharCode(parseInt(g,16));
 	});

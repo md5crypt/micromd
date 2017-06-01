@@ -8,7 +8,7 @@ see it parsing this document here: [https://md5crypt.github.io/micromd]
 
 ```javascript
 var html = micromd('**strong!**');
-// html == "<strong>strong!</strong>"
+// html == "<p><strong>strong</strong></p>"
 ```
 
 ## Supported syntax

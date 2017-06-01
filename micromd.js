@@ -1,3 +1,4 @@
+/*! micromd | https://github.com/md5crypt/micromd */
 /*jshint browser: true, jquery: true, devel: true, freeze:true, latedef:true, nocomma:true, nonbsp:true, nonew:true, strict:true, undef:true, unused:true*/
 (function(){
 "use strict";

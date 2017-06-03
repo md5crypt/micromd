@@ -18,7 +18,7 @@
 				});
 				$.get('README.md').done(function(data){
 					$('textarea').attr('disabled',false);
-					$('textarea').html(data);
+					$('textarea').val(data);
 					$('textarea').keyup(function(){
 						$('#content').html(micromd($(this).val()));
 					});

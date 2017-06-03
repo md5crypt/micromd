@@ -5,7 +5,11 @@ see it parsing this document here: [https://md5crypt.github.io/micromd]
 ```
 
 ## Usage
-### function micromd(input,nohtml)
+### function micromd(input\[, nohtml\])
+Parses a markdown string `input` and returns a string contaning the resulting HTML code.
+
+The optional `nothtml` argument can be used to escape all HTML characters in the input, disallowing raw HTML in markdown.
+
 ```javascript
 var out1 = micromd('**<em>strong!</em>**');
 var out2 = micromd('**<em>strong!</em>**',true);

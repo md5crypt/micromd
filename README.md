@@ -74,7 +74,7 @@ image link: [![alt text](https://www.google.pl/images/branding/googlelogo/2x/goo
 
 ### Code blocks
 
-#### without language specification (class `language-none`):
+without language specification (class `language-none`):
 ```
 **bold** and __bold__
 *italic* and _italic_
@@ -84,7 +84,7 @@ image link: [![alt text](https://www.google.pl/images/branding/googlelogo/2x/goo
 escaping \*things\* \[like this\] and a slash \\
 ```
 
-#### with language specification (class `language-lisp`):
+with language specification (class `language-lisp`):
 ```lisp
 ((((((((((((((((((((((((((((((((((((((((((([...and 1000 more]
 )))))))))))))))))))))))))))))))))))

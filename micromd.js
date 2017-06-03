@@ -7,7 +7,7 @@ var lookup1 = ['strong','em','del','code'];
 var lookup2 = {'**':0,'__':0,'*':1,'_':1,'~~':2,'`':3,'``':3,'```':3};
 function link(input){
 	return input.replace(/(!?)\[([^\[\]\r\n]+?)\](?:\((.+?)\))?/gm,function(match,img,text,link){
-		var src = (link||text).replace(/[*_~`#=-]/g,function(m){
+		var src = (link||text).replace(/[*_~`]/g,function(m){
 			return '\u0000'+m.charCodeAt(0).toString(16);
 		});
 		return img?'<img alt="'+text+'" src="'+src+'"/>':'<a href="'+src+'">'+(link?text:src)+'</a>';
@@ -28,10 +28,10 @@ function escapeHtml(input){
 	});
 }
 this.micromd = function(input,nohtml){
-	input = input.replace(/\\[\\*_~\[\]`#=>-]/g,function(m){
+	input = input.replace(/\\[\\*_~\[\]`#>-]/g,function(m){
 		return '\u0000'+(m.charCodeAt(1)).toString(16);
 	})+'\n\n';
-	var re = /^`{3}([^\s]+)?\s*\n([\s\S]+?)\n`{3}$|^(#+)\s*(.+)$|^([ \t]*)(\d+.|\*)\s+(.+)$|^(>[>\t ]*)(.+)$|^(-{3,}|_{3,}|\*{3,}|={3,}[\t ]*$)|^[\t ]*(.*)$/gm;
+	var re = /^```([^\s]+)?[ \t]*\r?\n([\s\S]+?)\r?\n```$|^(#+)[ \t]*(.+)$|^([ \t]*)(\d+\.|[*-])[ \t]+(.+)$|^(>[>\t ]*)(.+)$|^(-{3,}|\*{3,})$|^[\t ]*(.*)$/gm;
 	var output = '';
 	var buffer = '';
 	var stack = [];

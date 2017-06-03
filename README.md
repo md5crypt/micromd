@@ -95,7 +95,7 @@ with language specification (class `language-lisp`):
 )))))))))))))))))))))))))))))))))))
 ```
 
-#### html in code blocks:
+html in code blocks:
 
 ```html
 <html></html>

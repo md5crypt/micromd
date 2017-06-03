@@ -16,6 +16,14 @@
 						this.selectionEnd = s+1;
 					}
 				});
+				$('.sync').scroll(function(){
+					if($(this).hasClass('synchronized')){
+						$(this).removeClass('synchronized');
+					}else{
+						var other = $('.sync').not(this).addClass('synchronized')[0];
+						other.scrollTop = this.scrollTop / (this.scrollHeight - this.offsetHeight) * (other.scrollHeight - other.offsetHeight);
+					}
+				});
 				$.get('README.md').done(function(data){
 					$('textarea').attr('disabled',false);
 					$('textarea').val(data);
@@ -81,8 +89,8 @@
 		</style>
 	</head>
 	<body>
-		<div id="left"><textarea disabled="disabled"></textarea></div>
-		<div id="right">
+		<div id="left"><textarea class="sync" disabled="disabled"></textarea></div>
+		<div id="right" class="sync">
 			<a href="https://github.com/md5crypt/micromd"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
 			<div class="markdown-body" id="content">Loading...<div>
 		</div>

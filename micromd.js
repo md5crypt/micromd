@@ -8,7 +8,7 @@ var lookup2 = {'**':0,'__':0,'*':1,'_':1,'~~':2,'`':3,'``':3,'```':3};
 function link(input){
 	return input.replace(/(!?)\[([^\[\]\r\n]+?)\](?:\((.+?)\))?/gm,function(match,img,text,link){
 		var src = (link||text).replace(/[*_~`#=-]/g,function(m){
-			return '\\'+m.charCodeAt(0).toString(16);
+			return '\u0000'+m.charCodeAt(0).toString(16);
 		});
 		return img?'<img alt="'+text+'" src="'+src+'"/>':'<a href="'+src+'">'+(link?text:src)+'</a>';
 	});
@@ -19,17 +19,17 @@ function styles(input){
 		return '<'+tag+'>'+text+'</'+tag+'>';
 	});
 }
-function pp(input){
-	return styles(styles(link(link(input))));
+function pp(input,nohtml){
+	return styles(styles(link(link(nohtml?escapeHtml(input):input))));
 }
 function escapeHtml(input){
 	return input.replace(/[&<>"']/g,function(m){
 		return '&#'+m.charCodeAt(0)+';';
 	});
 }
-this.micromd = function(input){
-	input = input.replace(/\\[\\*_~\[\]`#=-]/g,function(m){
-		return '\\'+m.charCodeAt(1).toString(16);
+this.micromd = function(input,nohtml){
+	input = input.replace(/\\[\\*_~\[\]`#=>-]/g,function(m){
+		return '\u0000'+(m.charCodeAt(1)).toString(16);
 	})+'\n\n';
 	var re = /^`{3}([^\s]+)?\s*\n([\s\S]+?)\n`{3}$|^(#+)\s*(.+)$|^([ \t]*)(\d+.|\*)\s+(.+)$|^(>[>\t ]*)(.+)$|^(-{3,}|_{3,}|\*{3,}|={3,}[\t ]*$)|^[\t ]*(.*)$/gm;
 	var output = '';
@@ -44,10 +44,10 @@ this.micromd = function(input){
 			while(stack.length)
 				output += stack.pop();
 		if(m[11]){
-			buffer += m[11]+'<br/>';
+			buffer += pp(m[11],nohtml)+'<br/>';
 		}else{
 			if(buffer){
-				output += pp('<p>'+buffer.slice(0,-5)+'</p>');
+				output += '<p>'+buffer.slice(0,-5)+'</p>';
 				buffer = '';
 			}
 			//list: 5 - level; 6 - list type; 7 - text
@@ -63,18 +63,18 @@ this.micromd = function(input){
 					output += '<'+tag+'>';
 					stack.push('</'+tag+'>');
 				}
-				output += pp(m[6]?'<li>'+m[7]+'</li>':m[9]);
+				output += m[6]?'<li>'+pp(m[7],nohtml)+'</li>':pp(m[9],nohtml);
 			}if(m[2]){ //1 - language; 2 - code
-				output += '<pre class="language-'+(m[1]||'none')+'"><code>'+escapeHtml(m[2]).replace(/\\/g,'\\5c\\')+'</code></pre>';
+				output += '<pre class="language-'+(m[1]||'none')+'"><code>'+escapeHtml(m[2]).replace(/\u0000/g,'\\\u0000')+'</code></pre>';
 			}else if(m[3]){ //3 - number; 4 - text
-				output += pp('<h'+m[3].length+'>'+m[4]+'</h'+m[3].length+'>');
+				output += '<h'+m[3].length+'>'+pp(m[4],nohtml)+'</h'+m[3].length+'>';
 			}else if(m[10]){ //10 - hr
 				output += '<hr/>';
 			}
 		}
 	}
-	return output.replace(/\\(..)/g,function(m,g){
-		return String.fromCharCode(parseInt(g,16));
+	return output.replace(/\u0000(..)/g,function(m,g){
+		return (g=='3e'&&nohtml)?'&gt;':String.fromCharCode(parseInt(g,16));
 	});
 };
 

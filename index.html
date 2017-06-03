@@ -7,6 +7,15 @@
 		<script type="text/javascript" src="micromd.min.js"></script>
 		<script>
 			$(function(){
+				$(document).on('keydown','textarea',function(e){
+					if((e.keyCode||e.which) == 9){ 
+						e.preventDefault();
+						var s = this.selectionStart;
+						this.value = this.value.slice(0,s)+"\t"+this.value.slice(this.selectionEnd);
+						this.selectionStart = s+1;
+						this.selectionEnd = s+1;
+					}
+				});
 				$.get('README.md').done(function(data){
 					$('textarea').attr('disabled',false);
 					$('textarea').html(data);
@@ -58,6 +67,16 @@
 				padding:25px;
 				box-sizing:border-box;
 				position: relative;
+			}
+			textarea:focus {
+				outline: none;
+			}
+			textarea{
+				-moz-tab-size: 4;
+				tab-size: 4;
+			}
+			#content{
+				 padding-bottom: 4em;
 			}
 		</style>
 	</head>

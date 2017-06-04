@@ -8,7 +8,7 @@ var lookup2 = {'**':0,'__':0,'*':1,'_':1,'~~':2,'`':3,'``':3,'```':3};
 function link(input){
 	return input.replace(/(!?)\[([^\[\]\r\n]+?)\](?:\((.+?)\))?/gm,function(match,img,text,link){
 		var src = (link||text).replace(/[*_~`]/g,function(m){
-			return '\u0000'+m.charCodeAt(0).toString(16);
+			return '\0'+m.charCodeAt(0).toString(16);
 		});
 		return img?'<img alt="'+text+'" src="'+src+'"/>':'<a href="'+src+'">'+(link?text:src)+'</a>';
 	});
@@ -27,9 +27,9 @@ function escapeHtml(input){
 		return '&#'+m.charCodeAt(0)+';';
 	});
 }
-this.micromd = function(input,nohtml){
+this.micromd = function(input,nohtml,styler){
 	input = input.replace(/\\[\\*_~\[\]`#>-]/g,function(m){
-		return '\u0000'+(m.charCodeAt(1)).toString(16);
+		return '\0'+(m.charCodeAt(1)).toString(16);
 	})+'\n\n';
 	var re = /^```([^\s]+)?[ \t]*\r?\n([\s\S]+?)\r?\n```$|^(#+)[ \t]*(.+)$|^([ \t]*)(\d+\.|[*-])[ \t]+(.+)$|^(>[>\t ]*)(.+)$|^(-{3,}|\*{3,})$|^[\t ]*(.*)$/gm;
 	var output = '';
@@ -65,7 +65,10 @@ this.micromd = function(input,nohtml){
 				}
 				output += m[6]?'<li>'+pp(m[7],nohtml)+'</li>':pp(m[9],nohtml);
 			}if(m[2]){ //1 - language; 2 - code
-				output += '<pre class="language-'+(m[1]||'none')+'"><code>'+escapeHtml(m[2]).replace(/\u0000/g,'\\\u0000')+'</code></pre>';
+				var unescaped = m[2].replace(/\0(..)/g,function(m,g){
+					return '\\'+String.fromCharCode(parseInt(g,16));
+				});
+				output += '<pre class="language-'+(m[1]||'none')+'"><code>'+(styler?styler(m[1],unescaped):escapeHtml(unescaped))+'</code></pre>';
 			}else if(m[3]){ //3 - number; 4 - text
 				output += '<h'+m[3].length+'>'+pp(m[4],nohtml)+'</h'+m[3].length+'>';
 			}else if(m[10]){ //10 - hr
@@ -73,7 +76,7 @@ this.micromd = function(input,nohtml){
 			}
 		}
 	}
-	return output.replace(/\u0000(..)/g,function(m,g){
+	return output.replace(/\0(..)/g,function(m,g){
 		return (g=='3e'&&nohtml)?'&gt;':String.fromCharCode(parseInt(g,16));
 	});
 };

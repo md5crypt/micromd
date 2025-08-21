@@ -1,0 +1,38 @@
+{
+	"name": "micromd",
+	"version": "1.0.0",
+	"description": "a 3kb fully linear markdown parser",
+	"main": "./cjs/index.js",
+	"module": "./mjs/index.js",
+	"exports": {
+		".": {
+			"require": "./cjs/index.js",
+			"import": "./mjs/index.js"
+		},
+		"./*": {
+			"require": "./cjs/*",
+			"import": "./mjs/*"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"start": "tsc --watch",
+		"prepublishOnly": "node publish.js verify && tsc --outDir mjs && tsc --project ../tsconfig.cjs.json --outDir cjs",
+		"pub": "node publish.js pre-publish && cd dist-package && npm publish && cd .. && node publish.js post-publish"
+	},
+	"author": "Marek Korzeniowski",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/md5crypt/micromd/issues"
+	},
+	"homepage": "https://github.com/md5crypt/micromd#readme",
+	"keywords": [
+		"markdown",
+		"AST",
+		"parser"
+	],
+	"sideEffects": false,
+	"devDependencies": {
+		"typescript": "^5.9.2"
+	}
+}

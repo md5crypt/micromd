@@ -8,6 +8,9 @@ module.exports = env => ({
 	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js"],
+		extensionAlias: {
+			'.js': ['.js', '.ts'],
+		},
 		symlinks: false
 	},
 	mode: env.production ? "production" : "development",

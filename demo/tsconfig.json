@@ -5,7 +5,7 @@
 	"compilerOptions":{ 
 		"target": "ES2017",
 		"module": "ES2022",
-		"moduleResolution": "node",
+		"moduleResolution": "bundler",
 		"strict": true,
 		"noImplicitAny": true,
 		"strictNullChecks": true,

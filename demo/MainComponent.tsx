@@ -55,6 +55,8 @@ function loadFromUrl(url: string) {
 }
 
 export class MainComponent extends Component<Refs> {
+	private _wait = false
+
 	public render() {
 		return <div class={classes.root}>
 			<textarea
@@ -75,6 +77,11 @@ export class MainComponent extends Component<Refs> {
 	}
 
 	private handleScroll(side: "input" | "output") {
+		if (this._wait) {
+			this._wait = false
+			return
+		}
+		this._wait = true
 		const self = side == "input" ? this.refs.input : this.refs.output
 		const other = side == "input" ? this.refs.output : this.refs.input
 		other.scrollTop = self.scrollTop / (self.scrollHeight - self.offsetHeight) * (other.scrollHeight - other.offsetHeight)

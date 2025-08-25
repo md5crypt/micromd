@@ -3,12 +3,62 @@ See it parsing this document here: <https://md5crypt.github.io/micromd>
 
 * minimal footprint
 * 100% linear
+* single pass
 * AST generation with separate rendering backends
     * DOM backend available
     * string html backend available
     * super easy to implement a custom one!
-* ok-ish compatibility (but lacking table support)
+* ok-ish compatibility (see below)
 
+## Rational 
+
+This parser offers a fine balance between footprint size and common mark compatibility. It is by no means perfect but it is tiny (~3kB minified) and fast.
+
+## Syntax support
+
+* emphasis & inline code
+  - bold (`**, __`)
+  - italics (`*, _`)
+  - strikethrough (`~~`)
+  - bold italic (`***`)
+  - code spans (```` `, ``, ``` ````)
+    - escaping in code spans does not work
+    - inline code blocks don't stop on line breaks
+  - a simple fencing rule is used
+    - utf8 punctuation characters like em-dash do not count as boundaries
+    - `*_a_*` and `_*a*_` do not fence correctly
+
+* links and images
+  - `title` and `ref` not supported
+  - `href`/`src` cannot contain `(` or `)`
+  - `alt` cannot contain `[` or `]`
+  - escapes are not processed in `alt`, `href`, and `src`
+
+* autolinks
+  - supported only with `<...>` and only for `http` / `https`
+  - bare URLs are not auto-linked
+
+* hard line breaks
+  - more then two whitespaces at end of line are treated as hard break
+
+* headers
+  - headers using the `---` syntax (setext) are not supported
+
+* horizontal lines
+  - only `*** and ---` is supported, must start at column 0 (no indentation)
+
+* lists
+  - lists can't contain other block elements (header, blockquote, code fence)
+  - slightly different indentation rule then commonmark, should never be visible in normal use
+
+* blockquotes
+  - blockquotes can't contain other block elements (header, list, code fence)
+
+* code fences
+  - only triple backticks ```` ``` ```` are supported
+  - closing fence must be the only thing on its line
+  - a newline is required before the closing fence
+  - escaping inside fenced code is not supported
 
 ## Usage
 
@@ -173,16 +223,18 @@ import { readFileSync } from "fs"
 mdRenderHtml(readFileSync("README.md", "utf8"), {stream: console.log})
 ```
 
-## Supported syntax
+## Playground
 
 ### Text Formatting
 
 **bold** and __bold__  
 *italic* and _italic_  
+***bold italic***  
 ~~this thing~~  
 `code` ``code`` ```code```  
-*mixing `stuff` __bold__ italic*  
-escaping \*things\* \[like this\] and a slash \\
+*mixing `stuff` __bold__ italic*
+
+escaping \*things\* \`like this\` and a slash \\
 
 line line line line line line line line  
 line break
@@ -191,27 +243,26 @@ next paragraph
 
 ### Links
 
-simple link: <http://google.com/__strong__>
+auto link: <http://google.com/__strong__>  
 normal [link **strong**](http://google.com/__strong__)
 
 ### Images
 
-image: ![google](https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png)
-
+image: ![google](https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png)  
 image link: [![alt text](https://www.google.pl/images/branding/googlelogo/2x/googlelogo_color_120x44dp.png)](http://google.com)
 
 ### Headers
 
 #### #hash in header
-#### **bold** in header
+#### *italic* in header
 #### [link](#) in header
 
 ### Block quotes
 
-> block quote
+> block quote  
 > hey!
-> > nesting nesting
-> > > arrrghhh!
+> > **nesting** nesting
+> > > arrrghhh!  
 > > > help!
 > oh, it's ok know
 
@@ -236,12 +287,12 @@ image link: [![alt text](https://www.google.pl/images/branding/googlelogo/2x/goo
 
 without language specification (class `language-none`):
 ```
-**bold** and __bold__
-*italic* and _italic_
-~~this thing~~
-`code` ``code`` ```code```
+**bold** and __bold__  
+*italic* and _italic_  
+***bold italic***  
+~~this thing~~  
+`code` ``code`` ```code```  
 *mixing `stuff` __bold__ italic*
-escaping \*things\* \[like this\] and a slash \\
 ```
 
 with language specification (class `language-lisp`):
@@ -250,30 +301,9 @@ with language specification (class `language-lisp`):
 )))))))))))))))))))))))))))))))))))
 ```
 
-html in code blocks:
-
-```html
-<html></html>
-<strong>heh, nope.</strong>
-```
-
 ### Lines
 
 ---
 ***
 -----
 ****
-
-### Parser sanity checks
-\# header  
-#  
-*  
-\1. list  
-\> quote  
-\ \\ \> \* \~ \-  
-```  
-\ \\ \> \* \~ \-  
-```  
-\```  
-\---  
-** bam! **  

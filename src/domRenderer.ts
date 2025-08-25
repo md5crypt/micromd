@@ -63,6 +63,14 @@ export function mdRenderDom(input: string, options: MdRenderDomOptions = {}) {
 			case MdNodeType.ITALIC:
 				tag("em")
 				break
+			case MdNodeType.BOLD_ITALIC: {
+				const em = document.createElement("em")
+				const strong = document.createElement("strong")
+				em.appendChild(strong)
+				parent.appendChild(em)
+				renderTree(node.tree, strong)
+				break
+			}
 			case MdNodeType.STRIKETHROUGH:
 				tag("del")
 				break
@@ -78,7 +86,7 @@ export function mdRenderDom(input: string, options: MdRenderDomOptions = {}) {
 				const pre = tag("pre")
 				pre.appendChild(element)
 				if (node.lang) {
-					pre.classList.add("language-" + node.lang)
+					element.classList.add("language-" + node.lang)
 				}
 				break
 			}
@@ -86,7 +94,10 @@ export function mdRenderDom(input: string, options: MdRenderDomOptions = {}) {
 				tag("h" + Math.min(6, node.level))
 				break
 			case MdNodeType.LIST: {
-				tag(node.ordered ? "ol" : "ul")
+				const element = tag<HTMLOListElement>(node.start ? "ol" : "ul")
+				if (node.start) {
+					element.start = node.start
+				}
 				break
 			}
 			case MdNodeType.LIST_ITEM:

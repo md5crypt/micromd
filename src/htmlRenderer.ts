@@ -78,6 +78,9 @@ export function mdRenderHtml(input: string, options: MdRenderHtmlOptions = {}) {
 			case MdNodeType.ITALIC:
 				tag("<em>", "</em>")
 				break
+			case MdNodeType.BOLD_ITALIC:
+				tag("<em><strong>", "</strong></em>")
+				break
 			case MdNodeType.STRIKETHROUGH:
 				tag("<del>", "</del>")
 				break
@@ -88,7 +91,7 @@ export function mdRenderHtml(input: string, options: MdRenderHtmlOptions = {}) {
 				accumulator.push("<code>", escapeHtml(node.value), "</code>")
 				break
 			case MdNodeType.CODE_BLOCK:
-				accumulator.push(`<pre ${node.lang ? ` class="language-${escapeHtml(node.lang)}"` : ""}><code>`, codeStyler(node.value), "</code></pre>")
+				accumulator.push(`<pre><code${node.lang ? ` class="language-${escapeHtml(node.lang)}"` : ""}>`, codeStyler(node.value), "</code></pre>")
 				break
 			case MdNodeType.HEADER: {
 				const level = Math.min(6, node.level)
@@ -96,8 +99,8 @@ export function mdRenderHtml(input: string, options: MdRenderHtmlOptions = {}) {
 				break
 			}
 			case MdNodeType.LIST: {
-				if (node.ordered) {
-					tag("<ol>", "</ol>")
+				if (node.start) {
+					tag(`<ol start="${node.start}">`, "</ol>")
 				} else {
 					tag("<ul>", "</ul>")
 				}

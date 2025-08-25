@@ -1,9 +1,10 @@
 {
 	"name": "micromd",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "a 3kb fully linear markdown parser",
 	"main": "./cjs/index.js",
 	"module": "./mjs/index.js",
+	"type": "module",
 	"exports": {
 		".": {
 			"require": "./cjs/index.js",
@@ -17,8 +18,9 @@
 	"scripts": {
 		"build": "tsc",
 		"start": "tsc --watch",
-		"prepublishOnly": "node publish.js verify && tsc --outDir mjs && tsc --project ../tsconfig.cjs.json --outDir cjs",
-		"pub": "node publish.js pre-publish && cd dist-package && npm publish && cd .. && node publish.js post-publish"
+		"test": "node ./test/index.mjs",
+		"prepublishOnly": "node publish.mjs verify && tsc --outDir mjs && tsc --outDir cjs --module commonjs && node ../test/index.mjs ./mjs/htmlRenderer.js",
+		"pub": "node publish.mjs pre-publish && cd dist-package && npm publish && cd .. && node publish.mjs post-publish"
 	},
 	"author": "Marek Korzeniowski",
 	"license": "MIT",

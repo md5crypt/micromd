@@ -1,0 +1,1456 @@
+%TESTCASE% H1 simple
+# Heading 1
+%EXPECTS%
+<h1>Heading 1</h1>
+%END%
+
+%TESTCASE% H2 simple
+## Heading 2
+%EXPECTS%
+<h2>Heading 2</h2>
+%END%
+
+%TESTCASE% H3 simple
+### Heading 3
+%EXPECTS%
+<h3>Heading 3</h3>
+%END%
+
+%TESTCASE% H6 boundary
+###### Heading level 6
+%EXPECTS%
+<h6>Heading level 6</h6>
+%END%
+
+%TESTCASE% Header immediately followed by text line
+# Title
+Next line
+%EXPECTS%
+<h1>Title</h1><p>Next line</p>
+%END%
+
+%TESTCASE% Blockquote single
+> A simple quote
+%EXPECTS%
+<blockquote><p>A simple quote</p></blockquote>
+%END%
+
+%TESTCASE% Blockquote nested two
+>> nested quote
+%EXPECTS%
+<blockquote><blockquote><p>nested quote</p></blockquote></blockquote>
+%END%
+
+%TESTCASE% Blockquote mixed content
+> Quote line
+Normal line
+> Another quote
+%EXPECTS%
+<blockquote><p>Quote line Normal line Another quote</p></blockquote>
+%END%
+
+%TESTCASE% Horizontal rule dashes only
+---
+%EXPECTS%
+<hr/>
+%END%
+
+%TESTCASE% Horizontal rule stars only
+***
+%EXPECTS%
+<hr/>
+%END%
+
+%TESTCASE% Horizontal rule separated text
+text
+---
+more
+%EXPECTS%
+<p>text</p><hr/><p>more</p>
+%END%
+
+%TESTCASE% Paragraph two paragraphs
+Para one.
+
+Para two.
+%EXPECTS%
+<p>Para one.</p><p>Para two.</p>
+%END%
+
+%TESTCASE% Hard line break two spaces
+Line with two spaces at end  
+Next line
+%EXPECTS%
+<p>Line with two spaces at end<br/>Next line</p>
+%END%
+
+%TESTCASE% Inline italic star
+This is *italic* text
+%EXPECTS%
+<p>This is <em>italic</em> text</p>
+%END%
+
+%TESTCASE% Inline italic underscore
+This is _italic_ text
+%EXPECTS%
+<p>This is <em>italic</em> text</p>
+%END%
+
+%TESTCASE% Bold double star
+This is **bold** text
+%EXPECTS%
+<p>This is <strong>bold</strong> text</p>
+%END%
+
+%TESTCASE% Bold double underscore
+This is __bold__ text
+%EXPECTS%
+<p>This is <strong>bold</strong> text</p>
+%END%
+
+%TESTCASE% Strikethrough simple
+This is ~~strike~~ text
+%EXPECTS%
+<p>This is <del>strike</del> text</p>
+%END%
+
+%TESTCASE% Bold+italic combo stars
+***bold+italic***
+%EXPECTS%
+<p><em><strong>bold+italic</strong></em></p>
+%END%
+
+%TESTCASE% Unclosed emphasis star
+Open *emphasis here
+%EXPECTS%
+<p>Open *emphasis here</p>
+%END%
+
+%TESTCASE% Unclosed emphasis underscore
+Open _emphasis here
+%EXPECTS%
+<p>Open _emphasis here</p>
+%END%
+
+%TESTCASE% Escape literal asterisk
+\*literal asterisk\*
+%EXPECTS%
+<p>*literal asterisk*</p>
+%END%
+
+%TESTCASE% Escape left bracket
+\[not-a-link](http://x)
+%EXPECTS%
+<p>[not-a-link](http://x)</p>
+%END%
+
+%TESTCASE% Backslash escape many punctuations
+\!\@\#\$\%\^\&\*\(\)
+%EXPECTS%
+<p>!@#$%^&#38;*()</p>
+%END%
+
+%TESTCASE% Basic inline link
+This is a [link](http://example.com) here
+%EXPECTS%
+<p>This is a <a href="http://example.com">link</a> here</p>
+%END%
+
+%TESTCASE% Link with path and query (no paren)
+[q](http://example.com/path?x=1&y=2)
+%EXPECTS%
+<p><a href="http://example.com/path?x=1&#38;y=2">q</a></p>
+%END%
+
+%TESTCASE% Autolink angle http
+Visit <http://example.com> now
+%EXPECTS%
+<p>Visit <a href="http://example.com">http://example.com</a> now</p>
+%END%
+
+%TESTCASE% Autolink https
+Secure <https://example.com/path> end
+%EXPECTS%
+<p>Secure <a href="https://example.com/path">https://example.com/path</a> end</p>
+%END%
+
+%TESTCASE% Image simple alt
+![alt text](image.png)
+%EXPECTS%
+<p><img src="image.png" alt="alt text"/></p>
+%END%
+
+%TESTCASE% Image empty alt
+![](image.png)
+%EXPECTS%
+<p><img src="image.png"/></p>
+%END%
+
+%TESTCASE% Inline code single backtick
+Text with `inline` code sample
+%EXPECTS%
+<p>Text with <code>inline</code> code sample</p>
+%END%
+
+%TESTCASE% Inline code double backtick for inner backtick
+``code ` inner`` example
+%EXPECTS%
+<p><code>code ` inner</code> example</p>
+%END%
+
+%TESTCASE% Inline code with 3 backticks token
+```x```
+%EXPECTS%
+<p><code>x</code></p>
+%END%
+
+%TESTCASE% Inline code with backtick adjacent punctuation
+(`x`), and `y`.
+%EXPECTS%
+<p>(<code>x</code>), and <code>y</code>.</p>
+%END%
+
+%TESTCASE% Code fence triple backticks plain
+```
+let a=1;
+```
+%EXPECTS%
+<pre><code>let a=1;</code></pre>
+%END%
+
+%TESTCASE% Code fence with language token
+```js
+console.log('hi')
+```
+%EXPECTS%
+<pre><code class="language-js">console.log(&#39;hi&#39;)</code></pre>
+%END%
+
+%TESTCASE% Code fence missing closing
+```
+unclosed code here...
+%EXPECTS%
+<pre><code>unclosed code here...</code></pre>
+%END%
+
+%TESTCASE% Unordered list hyphen
+- one
+- two
+- three
+%EXPECTS%
+<ul><li>one</li><li>two</li><li>three</li></ul>
+%END%
+
+%TESTCASE% Unordered list asterisk
+* a
+* b
+* c
+%EXPECTS%
+<ul><li>a</li><li>b</li><li>c</li></ul>
+%END%
+
+%TESTCASE% Unordered list plus
++ p
++ q
+%EXPECTS%
+<ul><li>p</li><li>q</li></ul>
+%END%
+
+%TESTCASE% Ordered list simple
+1. first
+2. second
+3. third
+%EXPECTS%
+<ol start="1"><li>first</li><li>second</li><li>third</li></ol>
+%END%
+
+%TESTCASE% Nested list two-space indent
+- a
+  - b
+  - c
+%EXPECTS%
+<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>
+%END%
+
+%TESTCASE% Nested list four-space indent
+- a
+    - b
+    - c
+%EXPECTS%
+<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>
+%END%
+
+%TESTCASE% List indent jump back (realistic edge)
+- a
+    - b
+  - c
+%EXPECTS%
+<ul><li>a<ul><li>b</li></ul></li><li>c</li></ul>
+%END%
+
+%TESTCASE% Bad list
+    - a
+- b
+%EXPECTS%
+<ul><li>a</li><li>b</li></ul>
+%END%
+
+%TESTCASE% Multiple hr lines separated by blank lines
+---
+
+***
+
+---
+%EXPECTS%
+<hr/><hr/><hr/>
+%END%
+
+%TESTCASE% Inline emphasis across newline
+A *multi
+line* emphasis
+%EXPECTS%
+<p>A <em>multi line</em> emphasis</p>
+%END%
+
+%TESTCASE% Left/right boundary test with punctuation
+(a)*b*; end
+%EXPECTS%
+<p>(a)<em>b</em>; end</p>
+%END%
+
+%TESTCASE% Boundary NBSP (char 160) test with underscore
+word _word_ end
+%EXPECTS%
+<p>word <em>word</em> end</p>
+%END%
+
+%TESTCASE% Unicode letters next to underscore boundaries
+Côte_d'Azur _em_ test
+%EXPECTS%
+<p>Côte_d&#39;Azur <em>em</em> test</p>
+%END%
+
+%TESTCASE% Emoji and emphasis boundaries
+🙂*smile*🙂 text
+%EXPECTS%
+<p>🙂<em>smile</em>🙂 text</p>
+%END%
+
+%TESTCASE% IsBoundary punctuation at left and right
+a* b *c* d
+%EXPECTS%
+<p>a* b <em>c</em> d</p>
+%END%
+
+%TESTCASE% Underscore inside word should not emphasize
+inner_word_not_emphasize _but this is_
+%EXPECTS%
+<p>inner_word_not_emphasize <em>but this is</em></p>
+%END%
+
+%TESTCASE% Combined bold and italic nesting deliberately
+**outer *inner* outer**
+%EXPECTS%
+<p><strong>outer <em>inner</em> outer</strong></p>
+%END%
+
+%TESTCASE% Strikethrough nested with emphasis
+~~strike *and* more~~
+%EXPECTS%
+<p><del>strike <em>and</em> more</del></p>
+%END%
+
+%TESTCASE% Single tilde should not be strikethrough
+a~b~c (tilde singles)
+%EXPECTS%
+<p>a~b~c (tilde singles)</p>
+%END%
+
+%TESTCASE% Escaped emphasis opener
+\*not emphasis* but literal star
+%EXPECTS%
+<p>*not emphasis* but literal star</p>
+%END%
+
+%TESTCASE% Escaped backslash and asterisk sequence
+\\*literal star after slash
+%EXPECTS%
+<p>\*literal star after slash</p>
+%END%
+
+%TESTCASE% Escaped left parenthesis in text
+An escaped \( paren
+%EXPECTS%
+<p>An escaped ( paren</p>
+%END%
+
+%TESTCASE% Escaped closing parenthesis in text
+Escaped \) here
+%EXPECTS%
+<p>Escaped ) here</p>
+%END%
+
+%TESTCASE% Escaped backtick preceding code
+\`not code` vs `code`
+%EXPECTS%
+<p>`not code<code> vs </code>code`</p>
+%END%
+
+%TESTCASE% Many escaped punctuation sequence
+\!\[\]\(\)\*\_
+%EXPECTS%
+<p>![]()*_</p>
+%END%
+
+%TESTCASE% Link whose text contains emphasis markers
+[*star* link](http://x)
+%EXPECTS%
+<p><a href="http://x"><em>star</em> link</a></p>
+%END%
+
+%TESTCASE% Link whose href is simple without parentheses inside
+[see](http://ex.com/path) end
+%EXPECTS%
+<p><a href="http://ex.com/path">see</a> end</p>
+%END%
+
+%TESTCASE% Multiple links on same line
+[a](x) and [b](y) and <http://z>
+%EXPECTS%
+<p><a href="x">a</a> and <a href="y">b</a> and <a href="http://z">http://z</a></p>
+%END%
+
+%TESTCASE% Image then text then link
+![a](i.png) next [b](u)
+%EXPECTS%
+<p><img src="i.png" alt="a"/> next <a href="u">b</a></p>
+%END%
+
+%TESTCASE% Inline code that contains * and _ characters
+`*not* _not_` should be code
+%EXPECTS%
+<p><code>*not* _not_</code> should be code</p>
+%END%
+
+%TESTCASE% Inline code tokens mixed and repeated
+`a` `b` `c`
+%EXPECTS%
+<p><code>a</code> <code>b</code> <code>c</code></p>
+%END%
+
+%TESTCASE% Inline code token split by parser (1..3 backticks)
+``a`b`` (edge)
+%EXPECTS%
+<p><code>a`b</code> (edge)</p>
+%END%
+
+%TESTCASE% Backtick runs mixed: 1 and 3 on one line
+`x` ```y``` `z`
+%EXPECTS%
+<p><code>x</code> <code>y</code> <code>z</code></p>
+%END%
+
+%TESTCASE% Code fence with language and trailing spaces
+```py   
+print('x')
+```
+%EXPECTS%
+<pre><code class="language-py">print(&#39;x&#39;)</code></pre>
+%END%
+
+
+%TESTCASE% Code fence with consecutive fences
+```
+a
+```
+```
+b
+```
+%EXPECTS%
+<pre><code>a</code></pre><pre><code>b</code></pre>
+%END%
+
+%TESTCASE% Paragraph with many short inline tokens
+*a* _b_ **c** __d__ ~~e~~ `f`
+%EXPECTS%
+<p><em>a</em> <em>b</em> <strong>c</strong> <strong>d</strong> <del>e</del> <code>f</code></p>
+%END%
+
+%TESTCASE% Header-like but not header because no leading space in text (edge)
+#NotAHeader
+%EXPECTS%
+<p>#NotAHeader</p>
+%END%
+
+%TESTCASE% Angle-bracket autolink with trailing punctuation
+<http://ex.com>, end
+%EXPECTS%
+<p><a href="http://ex.com">http://ex.com</a>, end</p>
+%END%
+
+%TESTCASE% Complex nested lists many levels
+- l1
+  - l2
+    - l3
+      - l4
+%EXPECTS%
+<ul><li>l1<ul><li>l2<ul><li>l3<ul><li>l4</li></ul></li></ul></li></ul></li></ul>
+%END%
+
+%TESTCASE% List dedent pattern
+- a
+    - b
+      - c
+  - d
+%EXPECTS%
+<ul><li>a<ul><li>b<ul><li>c</li></ul></li></ul></li><li>d</li></ul>
+%END%
+
+%TESTCASE% Ordered list then unordered nested inside
+1. one
+   - a
+   - b
+2. two
+%EXPECTS%
+<ol start="1"><li>one<ul><li>a</li><li>b</li></ul></li><li>two</li></ol>
+%END%
+
+%TESTCASE% List item beginning with bracket-like text
+- [not link] actually plain text
+%EXPECTS%
+<ul><li>[not link] actually plain text</li></ul>
+%END%
+
+%TESTCASE% List item containing inline code and emphasis
+- this has `code` and *em* inside
+%EXPECTS%
+<ul><li>this has <code>code</code> and <em>em</em> inside</li></ul>
+%END%
+
+%TESTCASE% Header immediately followed by list (no blank line)
+# H
+- item
+- item2
+%EXPECTS%
+<h1>H</h1><ul><li>item</li><li>item2</li></ul>
+%END%
+
+%TESTCASE% Hard break inside list item (two spaces)
+- line  
+continued inside item
+%EXPECTS%
+<ul><li>line<br/>continued inside item</li></ul>
+%END%
+
+%TESTCASE% Escaped bracket then real link
+\[dummy] and [real](http://x)
+%EXPECTS%
+<p>[dummy] and <a href="http://x">real</a></p>
+%END%
+
+%TESTCASE% Brackets in text not forming link
+This [ is not a link because missing paren
+%EXPECTS%
+<p>This [ is not a link because missing paren</p>
+%END%
+
+%TESTCASE% Image with parentheses-free URL and alt containing punctuation
+![alt, with !?](img.png)
+%EXPECTS%
+<p><img src="img.png" alt="alt, with !?"/></p>
+%END%
+
+%TESTCASE% Image followed by immediate punctuation
+![a](i.png). Next
+%EXPECTS%
+<p><img src="i.png" alt="a"/>. Next</p>
+%END%
+
+%TESTCASE% Multiple images in one line
+![a](a.png) ![](b.png) ![c](c.png)
+%EXPECTS%
+<p><img src="a.png" alt="a"/> <img src="b.png"/> <img src="c.png" alt="c"/></p>
+%END%
+
+%TESTCASE% Large alt text repeated many words
+![alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt ](img.png)
+%EXPECTS%
+<p><img src="img.png" alt="alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt alt "/></p>
+%END%
+
+%TESTCASE% Emphasis with punctuation as boundary
+(test)_em_ (not)
+%EXPECTS%
+<p>(test)<em>em</em> (not)</p>
+%END%
+
+%TESTCASE% Underscore boundary weirdness with latin + non-latin
+abc_дe_фg _em_ end
+%EXPECTS%
+<p>abc_дe_фg <em>em</em> end</p>
+%END%
+
+%TESTCASE% IsBoundary ASCII-only behavior: punctuation before marker
+! *em* !
+%EXPECTS%
+<p>! <em>em</em> !</p>
+%END%
+
+%TESTCASE% IsBoundary ASCII-only behavior: punctuation after marker
+*em*!
+%EXPECTS%
+<p><em>em</em>!</p>
+%END%
+
+%TESTCASE% Underscore in the middle of word should not emphasize
+some_email_like name@example_com is not emphasis _ok_
+%EXPECTS%
+<p>some_email_like name@example_com is not emphasis <em>ok</em></p>
+%END%
+
+%TESTCASE% Consecutive single markers might open/close unpredictably
+*a*b*c*
+%EXPECTS%
+<p><em>a</em>b<em>c</em></p>
+%END%
+
+%TESTCASE% Trailing backslash at end of document
+Ends with backslash \
+%EXPECTS%
+<p>Ends with backslash \</p>
+%END%
+
+%TESTCASE% Backslash before punctuation at EOL
+Line ends with escaped \! 
+Next
+%EXPECTS%
+<p>Line ends with escaped ! Next</p>
+%END%
+
+%TESTCASE% Escaped punctuation inside code fence (should be literal)
+```
+line with \* not emphasis
+```
+%EXPECTS%
+<pre><code>line with \* not emphasis</code></pre>
+%END%
+
+%TESTCASE% Multiple inline code spans with different lengths
+`a` ``b`` ```c``` `d`
+%EXPECTS%
+<p><code>a</code> <code>b</code> <code>c</code> <code>d</code></p>
+%END%
+
+%TESTCASE% Backtick run splitting (1..3 permitted)
+``ab`c`` mixing
+%EXPECTS%
+<p><code>ab`c</code> mixing</p>
+%END%
+
+%TESTCASE% Many short tokens interleaved repeated
+(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`)
+%EXPECTS%
+<p>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>)</p>
+%END%
+
+%TESTCASE% Emphasis then link then emphasis to test nesting
+*start [link](http://x) end*
+%EXPECTS%
+<p><em>start <a href="http://x">link</a> end</em></p>
+%END%
+
+%TESTCASE% Link text contains closing bracket char inside text but simple case
+[text ](http://x)
+%EXPECTS%
+<p><a href="http://x">text </a></p>
+%END%
+
+%TESTCASE% Header with inline code and emphasis mixing
+# Title with `code` and *em*
+%EXPECTS%
+<h1>Title with <code>code</code> and <em>em</em></h1>
+%END%
+
+%TESTCASE% Header followed immediately by paragraph without blank line
+# H
+Paragraph right away
+%EXPECTS%
+<h1>H</h1><p>Paragraph right away</p>
+%END%
+
+%TESTCASE% Multiple headers grouped with content and lists
+# H1
+- a
+- b
+## H2
+Paragraph
+%EXPECTS%
+<h1>H1</h1><ul><li>a</li><li>b</li></ul><h2>H2</h2><p>Paragraph</p>
+%END%
+
+%TESTCASE% Complex nested emph + code + link combination
+*outer `code [link](http://x)` inner*
+%EXPECTS%
+<p><em>outer <code>code [link](http://x)</code> inner</em></p>
+%END%
+
+%TESTCASE% Edge escaping sequence inside inline code markers
+``a \` b``
+%EXPECTS%
+<p><code>a \` b</code></p>
+%END%
+
+%TESTCASE% Non-ASCII letter boundaries with emphasis markers
+русский*текст* test
+%EXPECTS%
+<p>русский<em>текст</em> test</p>
+%END%
+
+%TESTCASE% Multiple inline autolinks in one line
+<http://a> <https://b/path> <http://c?q=1>
+%EXPECTS%
+<p><a href="http://a">http://a</a> <a href="https://b/path">https://b/path</a> <a href="http://c?q=1">http://c?q=1</a></p>
+%END%
+
+%TESTCASE% Paragraph with embedded code fence inside text block (not fence)
+This line contains ``` inside text and should be text
+%EXPECTS%
+<p>This line contains ``` inside text and should be text</p>
+%END%
+
+%TESTCASE% Multiple small paragraphs
+p1
+
+p2
+
+p3
+
+p4
+%EXPECTS%
+<p>p1</p><p>p2</p><p>p3</p><p>p4</p>
+%END%
+
+%TESTCASE% Edge case: link end token when no matching opening bracket
+] (no open)
+%EXPECTS%
+<p>] (no open)</p>
+%END%
+
+%TESTCASE% Edge: stray opening '[' left on line
+text [ stray open
+next
+%EXPECTS%
+<p>text [ stray open next</p>
+%END%
+
+%TESTCASE% Edge: many '[' open then a single ']'
+[[[[[[[[[[[[[[[[[[[[] end
+%EXPECTS%
+<p>[[[[[[[[[[[[[[[[[[[[] end</p>
+%END%
+
+%TESTCASE% Edge: many ']' closing without opens
+]]]]]]]]]]]]]]]]]]]] end
+%EXPECTS%
+<p>]]]]]]]]]]]]]]]]]]]] end</p>
+%END%
+
+%TESTCASE% Performance stress: many inline tokens repeated across a long line
+*a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a* *a*
+%EXPECTS%
+<p><em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em> <em>a</em></p>
+%END%
+
+%TESTCASE% Edge: punctuation immediately left of emphasis opener
+abc!*def*ghi
+%EXPECTS%
+<p>abc!<em>def</em>ghi</p>
+%END%
+
+%TESTCASE% Edge: punctuation immediately right of emphasis closer
+*wow*!,
+%EXPECTS%
+<p><em>wow</em>!,</p>
+%END%
+
+%TESTCASE% List complexity: opening item then non-list text then list again
+- first
+paragraph under list
+- second
+%EXPECTS%
+<ul><li>first paragraph under list</li><li>second</li></ul>
+%END%
+
+%TESTCASE% Inline mixing of escaped characters and markers in sequence
+\*a* \_b_ \`c`
+%EXPECTS%
+<p>*a* _b_ `c`</p>
+%END%
+
+%TESTCASE% Edge: marker cluster at line end ambiguous
+ends with cluster ***
+%EXPECTS%
+<p>ends with cluster ***</p>
+%END%
+
+%TESTCASE% Edge: inline code adjacent to emphasis without spaces
+`x`*y*`z`
+%EXPECTS%
+<p><code>x</code><em>y</em><code>z</code></p>
+%END%
+
+%TESTCASE% Edge: link href with encoded percent parentheses
+[p](http://ex.com/a%28b%29c)
+%EXPECTS%
+<p><a href="http://ex.com/a%28b%29c">p</a></p>
+%END%
+
+%TESTCASE% Edge: image url with encoded parentheses
+![a](http://ex.com/a%28b%29.png)
+%EXPECTS%
+<p><img src="http://ex.com/a%28b%29.png" alt="a"/></p>
+%END%
+
+%TESTCASE% Edge: autolink with trailing closing punctuation
+Visit <http://x/path>.
+%EXPECTS%
+<p>Visit <a href="http://x/path">http://x/path</a>.</p>
+%END%
+
+%TESTCASE% Edge: consecutive inline link/image/code tokens
+[a](x)`b`![c](i.png)*d*
+%EXPECTS%
+<p><a href="x">a</a><code>b</code><img src="i.png" alt="c"/><em>d</em></p>
+%END%
+
+%TESTCASE% Stress: deeply repeated small patterns to check memory
+`x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y* `x`*y*
+%EXPECTS%
+<p><code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em> <code>x</code><em>y</em></p>
+%END%
+
+%TESTCASE% H2 with leading tabs
+  ## Heading two
+%EXPECTS%
+<p>  ## Heading two</p>
+%END%
+
+%TESTCASE% H6 with link
+###### Title [link](http://example.com)
+%EXPECTS%
+<h6>Title <a href="http://example.com">link</a></h6>
+%END%
+
+%TESTCASE% Header preceded by blank lines
+
+
+# Start
+%EXPECTS%
+<h1>Start</h1>
+%END%
+
+%TESTCASE% Header preceded by two spaces and paragraph
+# Start  
+test
+%EXPECTS%
+<h1>Start</h1><p>test</p>
+%END%
+
+%TESTCASE% Header then HR line
+# Title
+---
+%EXPECTS%
+<h1>Title</h1><hr/>
+%END%
+
+%TESTCASE% Header then list immediately
+# Title
+- item A
+- item B
+%EXPECTS%
+<h1>Title</h1><ul><li>item A</li><li>item B</li></ul>
+%END%
+
+%TESTCASE% Blockquote with emphasis and link
+> *em* and [link](http://a)
+%EXPECTS%
+<blockquote><p><em>em</em> and <a href="http://a">link</a></p></blockquote>
+%END%
+
+%TESTCASE% Blockquote followed by HR
+> quoted
+***
+%EXPECTS%
+<blockquote><p>quoted</p></blockquote><hr/>
+%END%
+
+%TESTCASE% Paragraph with explicit line break (two spaces)
+Line A  
+Line B
+%EXPECTS%
+<p>Line A<br/>Line B</p>
+%END%
+
+%TESTCASE% Paragraph with single trailing space (no break)
+Line A 
+Line B
+%EXPECTS%
+<p>Line A Line B</p>
+%END%
+
+%TESTCASE% Paragraph with tab before newline (no break)
+Line A	
+Line B
+%EXPECTS%
+<p>Line A Line B</p>
+%END%
+
+%TESTCASE% Emphasis around punctuation boundaries
+(start)*mid*; end
+%EXPECTS%
+<p>(start)<em>mid</em>; end</p>
+%END%
+
+%TESTCASE% Emphasis inside parentheses and quotes
+("*inside*" word)
+%EXPECTS%
+<p>(&#34;<em>inside</em>&#34; word)</p>
+%END%
+
+%TESTCASE% Double underscore bold around digits
+__123__ and __abc__
+%EXPECTS%
+<p><strong>123</strong> and <strong>abc</strong></p>
+%END%
+
+%TESTCASE% Mixed strong and italic crossing
+**bold _italic_ bold**
+%EXPECTS%
+<p><strong>bold <em>italic</em> bold</strong></p>
+%END%
+
+%TESTCASE% Unbalanced tildes remain text
+~~start~ middle ~~end
+%EXPECTS%
+<p>~~start~ middle ~~end</p>
+%END%
+
+%TESTCASE% Emphasis opener with no closer kept text
+This *never closes
+%EXPECTS%
+<p>This *never closes</p>
+%END%
+
+%TESTCASE% Emphasis closer with no opener kept text
+This never opens*
+%EXPECTS%
+<p>This never opens*</p>
+%END%
+
+%TESTCASE% Emphasis with NBSP boundaries underscore
+word _value_ end
+%EXPECTS%
+<p>word <em>value</em> end</p>
+%END%
+
+%TESTCASE% Emphasis with THIN SPACE boundaries star
+word *value* end
+%EXPECTS%
+<p>word <em>value</em> end</p>
+%END%
+
+%TESTCASE% Emphasis with NARROW NBSP boundaries
+word *value* end
+%EXPECTS%
+<p>word <em>value</em> end</p>
+%END%
+
+%TESTCASE% Emphasis adjacent to emoji
+🙂*yay*🙂 more
+%EXPECTS%
+<p>🙂<em>yay</em>🙂 more</p>
+%END%
+
+%TESTCASE% Emphasis adjacent to non-Latin letters
+тест*жирный*тест
+%EXPECTS%
+<p>тест<em>жирный</em>тест</p>
+%END%
+
+%TESTCASE% Asterisk emphasis near underscores in words
+mix_word*em*more_word
+%EXPECTS%
+<p>mix_word<em>em</em>more_word</p>
+%END%
+
+%TESTCASE% Underscore emphasis near hyphens
+pre-_em_-post
+%EXPECTS%
+<p>pre-<em>em</em>-post</p>
+%END%
+
+%TESTCASE% Escaped backslash itself
+\\ should show one backslash
+%EXPECTS%
+<p>\ should show one backslash</p>
+%END%
+
+%TESTCASE% Escaped marker inside emphasis (literal)
+*escaped \* star*
+%EXPECTS%
+<p><em>escaped * star</em></p>
+%END%
+
+%TESTCASE% Basic inline link with text
+Text [click here](http://example.com/path) ok
+%EXPECTS%
+<p>Text <a href="http://example.com/path">click here</a> ok</p>
+%END%
+
+%TESTCASE% Inline link with hyphens underscore punctuation
+[a-b_c](http://example.com/a-b_c)
+%EXPECTS%
+<p><a href="http://example.com/a-b_c">a-b_c</a></p>
+%END%
+
+%TESTCASE% Inline link followed by punctuation
+[go](http://a), next
+%EXPECTS%
+<p><a href="http://a">go</a>, next</p>
+%END%
+
+%TESTCASE% Multiple inline links same line
+[a](http://x) [b](http://y) [c](https://z)
+%EXPECTS%
+<p><a href="http://x">a</a> <a href="http://y">b</a> <a href="https://z">c</a></p>
+%END%
+
+%TESTCASE% Autolink simple http
+Look <http://example.com> now
+%EXPECTS%
+<p>Look <a href="http://example.com">http://example.com</a> now</p>
+%END%
+
+%TESTCASE% Autolink https with path and query
+Open <https://ex.com/a/b?x=1&y=2> end
+%EXPECTS%
+<p>Open <a href="https://ex.com/a/b?x=1&#38;y=2">https://ex.com/a/b?x=1&#38;y=2</a> end</p>
+%END%
+
+%TESTCASE% Link text containing emphasis markers literal
+[*starred*](http://x) ok
+%EXPECTS%
+<p><a href="http://x"><em>starred</em></a> ok</p>
+%END%
+
+%TESTCASE% Link text containing inline code
+[`code`](http://x) ok
+%EXPECTS%
+<p><a href="http://x"><code>code</code></a> ok</p>
+%END%
+
+%TESTCASE% Link immediately followed by emphasis
+[x](http://a)*em*
+%EXPECTS%
+<p><a href="http://a">x</a><em>em</em></p>
+%END%
+
+%TESTCASE% Image followed by link
+![a](i.png)[b](http://x)
+%EXPECTS%
+<p><img src="i.png" alt="a"/><a href="http://x">b</a></p>
+%END%
+
+%TESTCASE% Inline code two backticks with backtick inside
+``a ` tick`` ok
+%EXPECTS%
+<p><code>a ` tick</code> ok</p>
+%END%
+
+%TESTCASE% Inline code containing asterisks and underscores
+`*not* _em_` outside
+%EXPECTS%
+<p><code>*not* _em_</code> outside</p>
+%END%
+
+%TESTCASE% Inline code across multiple lines
+`first line
+second line` end
+%EXPECTS%
+<p><code>first line
+second line</code> end</p>
+%END%
+
+%TESTCASE% Many inline code spans in one line
+`a` `bb` `ccc`
+%EXPECTS%
+<p><code>a</code> <code>bb</code> <code>ccc</code></p>
+%END%
+
+%TESTCASE% Inline code adjacent to emphasis without spaces
+`x`*y*`z` ok
+%EXPECTS%
+<p><code>x</code><em>y</em><code>z</code> ok</p>
+%END%
+
+%TESTCASE% Code fence content contains backticks
+```
+content with ``` inside
+```
+%EXPECTS%
+<pre><code>content with ``` inside</code></pre>
+%END%
+
+%TESTCASE% Code fence no closing (consume rest)
+```
+unterminated
+%EXPECTS%
+<pre><code>unterminated</code></pre>
+%END%
+
+%TESTCASE% Code fence followed by paragraph
+```
+code
+```
+Paragraph
+%EXPECTS%
+<pre><code>code</code></pre><p>Paragraph</p>
+%END%
+
+%TESTCASE% Autolink with trailing punctuation period
+See <http://a>.
+%EXPECTS%
+<p>See <a href="http://a">http://a</a>.</p>
+%END%
+
+%TESTCASE% Autolink followed by comma and text
+<https://b>, then text
+%EXPECTS%
+<p><a href="https://b">https://b</a>, then text</p>
+%END%
+
+%TESTCASE% Link with encoded parentheses
+[p](http://ex.com/a%28b%29)
+%EXPECTS%
+<p><a href="http://ex.com/a%28b%29">p</a></p>
+%END%
+
+%TESTCASE% Image with encoded parentheses
+![i](http://ex.com/a%28b%29.png)
+%EXPECTS%
+<p><img src="http://ex.com/a%28b%29.png" alt="i"/></p>
+%END%
+
+%TESTCASE% Link with hash fragment safe
+[jump](http://ex.com/page#sec)
+%EXPECTS%
+<p><a href="http://ex.com/page#sec">jump</a></p>
+%END%
+
+%TESTCASE% Link with query and ampersands
+[q](http://ex.com/?x=1&y=2)
+%EXPECTS%
+<p><a href="http://ex.com/?x=1&#38;y=2">q</a></p>
+%END%
+
+%TESTCASE% Link text equals URL
+[http://ex.com](http://ex.com)
+%EXPECTS%
+<p><a href="http://ex.com">http://ex.com</a></p>
+%END%
+
+%TESTCASE% Link then image then code-span chain
+[a](x) ![b](y.png) `c`
+%EXPECTS%
+<p><a href="x">a</a> <img src="y.png" alt="b"/> <code>c</code></p>
+%END%
+
+%TESTCASE% Text with stray '[' not forming link
+Left [ bracket stays
+%EXPECTS%
+<p>Left [ bracket stays</p>
+%END%
+
+%TESTCASE% Text with stray ']' not part of link
+Right ] bracket stays
+%EXPECTS%
+<p>Right ] bracket stays</p>
+%END%
+
+%TESTCASE% Text with '](...)' but no '[' earlier
+](http://x) alone
+%EXPECTS%
+<p>](http://x) alone</p>
+%END%
+
+%TESTCASE% Many '[' then one ']'
+[[[[[[[]]
+%EXPECTS%
+<p>[[[[[[[]]</p>
+%END%
+
+%TESTCASE% Many ']' then text
+]]]]] end
+%EXPECTS%
+<p>]]]]] end</p>
+%END%
+
+%TESTCASE% Mixed brackets and markers stress small
+[*_`~]
+%EXPECTS%
+<p>[*_`~]</p>
+%END%
+
+%TESTCASE% Escaped closing bracket before link
+\] then [x](http://a)
+%EXPECTS%
+<p>] then <a href="http://a">x</a></p>
+%END%
+
+%TESTCASE% Escaped opening bracket then real
+\[ not link ] and [ok](x)
+%EXPECTS%
+<p>[ not link ] and <a href="x">ok</a></p>
+%END%
+
+%TESTCASE% Emphasis then link inside same word boundary
+pre*em*post[link](x)
+%EXPECTS%
+<p>pre<em>em</em>post<a href="x">link</a></p>
+%END%
+
+%TESTCASE% Emphasis across lines
+start *across
+line* end
+%EXPECTS%
+<p>start <em>across line</em> end</p>
+%END%
+
+%TESTCASE% Emphasis open-close touching punctuation
+-*em*- and _em_!
+%EXPECTS%
+<p>-<em>em</em>- and <em>em</em>!</p>
+%END%
+
+%TESTCASE% Italic inside code should not parse
+`code *not* em`
+%EXPECTS%
+<p><code>code *not* em</code></p>
+%END%
+
+%TESTCASE% Link inside code should not parse
+`[link](x)` as code
+%EXPECTS%
+<p><code>[link](x)</code> as code</p>
+%END%
+
+%TESTCASE% Code fence then blockquote
+```
+code
+```
+> quote
+%EXPECTS%
+<pre><code>code</code></pre><blockquote><p>quote</p></blockquote>
+%END%
+
+%TESTCASE% Blockquote then code fence
+> before
+```
+code
+```
+%EXPECTS%
+<blockquote><p>before</p></blockquote><pre><code>code</code></pre>
+%END%
+
+%TESTCASE% Three paragraphs no extra HR
+a
+
+b
+
+c
+%EXPECTS%
+<p>a</p><p>b</p><p>c</p>
+%END%
+
+%TESTCASE% HR then header then paragraph
+***
+# Title
+para
+%EXPECTS%
+<hr/><h1>Title</h1><p>para</p>
+%END%
+
+%TESTCASE% Header then HR then list
+## H
+---
+- a
+%EXPECTS%
+<h2>H</h2><hr/><ul><li>a</li></ul>
+%END%
+
+%TESTCASE% Blockquote with trailing two spaces (hard break)
+> line  
+> next
+%EXPECTS%
+<blockquote><p>line<br/>next</p></blockquote>
+%END%
+
+%TESTCASE% Angle autolink followed by emphasis
+<http://x>*em*
+%EXPECTS%
+<p><a href="http://x">http://x</a><em>em</em></p>
+%END%
+
+%TESTCASE% Code fence content contains closing-like but not at BOL
+```
+text 
+ ``` not closing
+```
+%EXPECTS%
+<pre><code>text 
+ ``` not closing</code></pre>
+%END%
+
+%TESTCASE% Code fence closing immediately after content
+```
+code``` 
+```
+%EXPECTS%
+<pre><code>code``` </code></pre>
+%END%
+
+%TESTCASE% Code fence with language and empty body
+```txt
+```
+%EXPECTS%
+<pre><code class="language-txt"></code></pre>
+%END%
+
+%TESTCASE% Code fence followed by HR directly
+```
+a
+```
+***
+%EXPECTS%
+<pre><code>a</code></pre><hr/>
+%END%
+
+%TESTCASE% Code fence then list immediately
+```
+code
+```
+- item
+%EXPECTS%
+<pre><code>code</code></pre><ul><li>item</li></ul>
+%END%
+
+%TESTCASE% Code fence with long last line no final newline
+```
+last line no eol```
+%EXPECTS%
+<pre><code>last line no eol```</code></pre>
+%END%
+
+%TESTCASE% Code fence open at end of file
+text
+```
+
+%EXPECTS%
+<p>text</p><pre><code></code></pre>
+%END%
+
+%TESTCASE% Many short inline tokens spaced
+*a* _b_ **c** __d__ `f` <http://g>
+%EXPECTS%
+<p><em>a</em> <em>b</em> <strong>c</strong> <strong>d</strong> <code>f</code> <a href="http://g">http://g</a></p>
+%END%
+
+%TESTCASE% Inline code with many backslashes
+`\\\\` outside
+%EXPECTS%
+<p><code>\\\\</code> outside</p>
+%END%
+
+%TESTCASE% Emphasis markers next to digits and letters
+a1*b*2 _c_3
+%EXPECTS%
+<p>a1<em>b</em>2 _c_3</p>
+%END%
+
+%TESTCASE% Link then punctuation cluster
+[x](http://a)!?:;
+%EXPECTS%
+<p><a href="http://a">x</a>!?:;</p>
+%END%
+
+%TESTCASE% Image then punctuation cluster
+![i](a.png)!?:;
+%EXPECTS%
+<p><img src="a.png" alt="i"/>!?:;</p>
+%END%
+
+%TESTCASE% Fencing test 1
+** bam **
+%EXPECTS%
+<p>** bam **</p>
+%END%
+
+%TESTCASE% Fencing test 2
+test ** bam ** test
+%EXPECTS%
+<p>test ** bam ** test</p>
+%END%
+
+%TESTCASE% Paragraph 3 tabs
+test			
+test
+%EXPECTS%
+<p>test<br/>test</p>
+%END%
+
+%TESTCASE% Code fencing consume test
+```
+test
+```test
+%EXPECTS%
+<pre><code>test</code></pre>
+%END%
+
+%TESTCASE% Different list starts
+- a
++ b
+* c
+%EXPECTS%
+<ul><li>a</li><li>b</li><li>c</li></ul>
+%END%
+
+%TESTCASE% Ordered list start
+99. a
+100. b
+101. c
+%EXPECTS%
+<ol start="99"><li>a</li><li>b</li><li>c</li></ol>
+%END%
+
+%TESTCASE% List with paragraph after
+- a
+
+test
+%EXPECTS%
+<ul><li>a</li></ul><p>test</p>
+%END%
+
+%TESTCASE% Big mixed document
+# Title
+
+- one *em* [l](http://x)
+- two `c`
+
+> quote
+
+***
+
+Paragraph end.
+%EXPECTS%
+<h1>Title</h1><ul><li>one <em>em</em> <a href="http://x">l</a></li><li>two <code>c</code></li></ul><blockquote><p>quote</p></blockquote><hr/><p>Paragraph end.</p>
+%END%

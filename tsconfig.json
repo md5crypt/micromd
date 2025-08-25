@@ -5,7 +5,7 @@
 	"compilerOptions": {
 		"target": "ES2022",
 		"module": "ES2022",
-		"outDir": "./dist/mjs",
+		"outDir": "./dist",
 		"moduleResolution": "node",
 		"declaration": true,
 		"inlineSourceMap": false,

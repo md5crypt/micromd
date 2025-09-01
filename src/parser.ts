@@ -13,7 +13,7 @@ const enum BlockGroup {
 	H_LINE,
 	LIST_LEVEL,
 	LIST_TYPE,
-	BLOCKQUOTE_LEVEL
+	BLOCKQUOTE
 }
 
 const enum WhitespaceType {
@@ -43,6 +43,12 @@ export const enum MdNodeType {
 	IMAGE
 }
 
+const enum BoundaryType {
+	CHARACTER = 0,
+	PUNCTUATION = 1,
+	WHITESPACE = 2
+}
+
 /**
  * Base AST node
  */
@@ -70,11 +76,6 @@ export interface MdGenericNode extends MdBaseNode {
 		| MdNodeType.BLOCKQUOTE
 }
 
-interface MdBlockquoteInternalNode extends MdBaseNode {
-	type: MdNodeType.BLOCKQUOTE
-	_d: number
-}
-
 export interface MdHeaderNode extends MdBaseNode {
 	type: MdNodeType.HEADER
 	level: number
@@ -94,11 +95,7 @@ export interface MdCodeNode extends MdBaseNode {
 export interface MdListNode extends MdBaseNode {
 	type: MdNodeType.LIST
 	start?: number
-}
-
-interface MdListInternalNode extends MdBaseNode {
-	type: MdNodeType.LIST
-	start?: number
+	/** @internal */
 	_i: number
 }
 
@@ -192,18 +189,16 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 	
 	function isBoundary(position: number) {
 		if (position < 0 || position >= input.length) {
-			return true
+			return BoundaryType.WHITESPACE
 		} else {
 			const c = input.charCodeAt(position)
-			// approximation, but should be good enough
-			return (
-				(c >= 9 && c <= 12) ||
-				(c >= 32 && c <= 47) ||
-				(c >= 58 && c <= 64) ||
-				(c >= 91 && c <= 96) ||
-				(c >= 123 && c <= 126) ||
-				(c == 160)
-			)
+			if (c <= 32 || (c == 160)) {
+				return BoundaryType.WHITESPACE
+			}
+			if ((c >= 33 && c <= 47) || (c >= 58 && c <= 64) || (c >= 91 && c <= 96) || (c >= 123 && c <= 126)) {
+				return BoundaryType.PUNCTUATION
+			}
+			return BoundaryType.CHARACTER
 		}
 	}
 
@@ -296,28 +291,33 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 				} else {
 					const leftBoundary = isBoundary(match.index - 1)
 					const rightBoundary = isBoundary(lineRe.lastIndex)
-					if (!rightBoundary && leftBoundary) {
-						addText(token, true)
-					} else if (!leftBoundary && (rightBoundary || token[0] != "_")) {
-						const stackSize = lineStack.length
-						let index = -1
-						for (index = stackSize - 1; index >= 0 && lineStack[index].value != token; index -= 1) {
+					/*
+						for _ and __
+						start: [space or punkt] [not space] 
+						end: [not space] [space or punkt]
+
+						for *, **, *** and ~~
+						start: [any] [not space]
+						end: [not space] [any]
+					*/
+					let index = -1
+					if (leftBoundary != BoundaryType.WHITESPACE && (token[0] != "_" || rightBoundary != BoundaryType.CHARACTER)) {
+						for (index = lineStack.length - 1; index >= 0 && lineStack[index].value != token; index -= 1) {
 							// no-op
 						}
-						if (index < 0) {
-							addText(token, !rightBoundary)
-						} else {
-							const target = lineStack[index] as MdBaseNode
-							target.type = TOKEN_LUT[token]
-							target.tree = combineTexts(target.next)
-							target.next = undefined
-							currentNode = target as MdNode
-							for (; index < stackSize; index += 1) {
-								lineStack.pop()
-							}
-						}
+					}
+					if (index < 0) {
+						addText(token, rightBoundary != BoundaryType.WHITESPACE && (token[0] != "_" || leftBoundary != BoundaryType.CHARACTER))
 					} else {
-						addText(token)
+						const target = lineStack[index] as MdBaseNode
+						target.type = TOKEN_LUT[token]
+						target.tree = combineTexts(target.next)
+						target.next = undefined
+						currentNode = target as MdNode
+						const stackSize = lineStack.length
+						for (; index < stackSize; index += 1) {
+							lineStack.pop()
+						}
 					}
 				}
 			} else if (match[LineGroup.LINE] !== undefined) {
@@ -330,7 +330,7 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 	}
 
 	function parseBlock() {
-		const blockRe = /```([^\s]*)[ \t]*\r?\n|(#+)[ \t]+|(-{3,}|\*{3,})[ \t]*(?:\r?\n|$)|([ \t]*)(\d+\.|[*+-])[ \t]+|(>[>\t ]*)|[^\S\r\n]*\r?\n/y
+		const blockRe = /```([^\s]*)[ \t]*\r?\n|(#+)[ \t]+|(-{3,}|\*{3,})[ \t]*(?:\r?\n|$)|([ \t]*)(\d+\.|[*+-])[ \t]+|(>[\t ]*)|[^\S\r\n]*\r?\n/y
 		const stack = [] as MdNode[]
 		const inputLength = input.length
 		const streamFunc = options.stream
@@ -393,14 +393,7 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 						value: input.slice(lastIndex, endPosition),
 						lang: match[BlockGroup.CODE_LANG]
 					})
-					// eat remaining line data, not a perfect solution, but good enough
-					// as alternative would add a lot of code with no greater benefit
-					lastIndex = input.indexOf("\n", endPosition + 4)
-					if (lastIndex < 0) {
-						lastIndex = inputLength
-					} else {
-						lastIndex += 1
-					}
+					lastIndex = endPosition + 4
 					continue
 				} else if (match[BlockGroup.HEADER_LEVEL] !== undefined) {
 					addTreeNode({
@@ -414,12 +407,12 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 					addNode({type: MdNodeType.HORIZONTAL_LINE})
 					continue
 				} else if (match[BlockGroup.LIST_LEVEL] !== undefined) {
-					let stackTop = stack.length - 1
 					const level = match[BlockGroup.LIST_LEVEL].length
+					let stackTop = stack.length - 1
 					let create = true
 					if (stackTop >= 0 && stack[stackTop].type == MdNodeType.LIST_ITEM) {
 						// if last node was LIST_ITEM current node HAS to be LIST
-						let indent = (stack[stackTop - 1] as MdListInternalNode)._i
+						let indent = (stack[stackTop - 1] as MdListNode)._i
 						if (level < indent + 2) {
 							popNode()
 							stackTop -= 1
@@ -427,7 +420,7 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 								popNode()
 								popNode()
 								stackTop -= 2
-								indent = (stack[stackTop] as MdListInternalNode)._i
+								indent = (stack[stackTop] as MdListNode)._i
 							}
 							addTreeNode({type: MdNodeType.LIST_ITEM}, true)
 							create = false
@@ -438,41 +431,17 @@ export function mdParse(input: string, options: MdParseOptions = {}) {
 					}
 					if (create) {
 						const type = match[BlockGroup.LIST_TYPE]
-						const list = {type: MdNodeType.LIST, _i: level} as MdListInternalNode
+						const list: MdListNode = {type: MdNodeType.LIST, _i: level} 
 						if (type.length > 1) {
 							list.start = parseInt(type)
 						}
 						addTreeNode(list, true)
 						addTreeNode({type: MdNodeType.LIST_ITEM}, true)
 					}
-				} else if (match[BlockGroup.BLOCKQUOTE_LEVEL] !== undefined) {
-					const levelStr = match[BlockGroup.BLOCKQUOTE_LEVEL]
-					let level = 0 
-					for (let i = 0; i < levelStr.length; i += 1) {
-						if (levelStr[i] == ">") {
-							level += 1
-						}
-					}
-					const topQuote = stack.length - 2
-					let depth = 0
-					if (topQuote >= 0 && stack[topQuote].type == MdNodeType.BLOCKQUOTE) {
-						depth = (stack[topQuote] as MdBlockquoteInternalNode)._d
-						if (depth != level) {
-							popNode()
-						}
-					} else {
-						flush()
-					}
-					if (depth != level) {
-						flushInline()
-						while (depth > level) {
-							popNode()
-							depth -= 1
-						}
-						while (depth < level) {
-							depth += 1
-							addTreeNode({type: MdNodeType.BLOCKQUOTE, _d: depth} as MdBlockquoteInternalNode, true)
-						}
+				} else if (match[BlockGroup.BLOCKQUOTE] !== undefined) {
+					const offset = stack.length - 2
+					if (pendingFlush || offset < 0 || stack[offset].type != MdNodeType.BLOCKQUOTE) {
+						addTreeNode({type: MdNodeType.BLOCKQUOTE})
 						addTreeNode({type: MdNodeType.PARAGRAPH}, true)
 					}
 				} else {

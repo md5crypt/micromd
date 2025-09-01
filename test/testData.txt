@@ -35,18 +35,20 @@ Next line
 <blockquote><p>A simple quote</p></blockquote>
 %END%
 
-%TESTCASE% Blockquote nested two
->> nested quote
-%EXPECTS%
-<blockquote><blockquote><p>nested quote</p></blockquote></blockquote>
-%END%
-
 %TESTCASE% Blockquote mixed content
 > Quote line
 Normal line
 > Another quote
 %EXPECTS%
 <blockquote><p>Quote line Normal line Another quote</p></blockquote>
+%END%
+
+%TESTCASE% Blockquote after blockquote
+> Quote line
+
+> Another quote
+%EXPECTS%
+<blockquote><p>Quote line</p></blockquote><blockquote><p>Another quote</p></blockquote>
 %END%
 
 %TESTCASE% Horizontal rule dashes only
@@ -650,7 +652,7 @@ line with \* not emphasis
 %TESTCASE% Many short tokens interleaved repeated
 (*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`(*_~`)
 %EXPECTS%
-<p>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>(*_~<code>(*_~</code>)</p>
+<p>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em><em>~<code>(*_~</code>(*</em>~<code>(*_~</code>(<em>_~<code>(*_~</code>(</em>_~<code>(*_~</code>)</p>
 %END%
 
 %TESTCASE% Emphasis then link then emphasis to test nesting
@@ -1389,16 +1391,42 @@ a1*b*2 _c_3
 <p><img src="a.png" alt="i"/>!?:;</p>
 %END%
 
-%TESTCASE% Fencing test 1
+%TESTCASE% Fencing test *
 ** bam **
+
+**bam **
+
+** bam**
+
+.**.bam.**.
+
+a**bam**a
+
+a **bam** a
 %EXPECTS%
-<p>** bam **</p>
+<p>** bam **</p><p>**bam **</p><p>** bam**</p><p>.<strong>.bam.</strong>.</p><p>a<strong>bam</strong>a</p><p>a <strong>bam</strong> a</p>
 %END%
 
-%TESTCASE% Fencing test 2
-test ** bam ** test
+%TESTCASE% Fencing test _
+__ bam __
+
+__bam __
+
+__ bam__
+
+.__.bam.__.
+
+a__bam__a
+
+a __bam__ a
 %EXPECTS%
-<p>test ** bam ** test</p>
+<p>__ bam __</p><p>__bam __</p><p>__ bam__</p><p>.<strong>.bam.</strong>.</p><p>a__bam__a</p><p>a <strong>bam</strong> a</p>
+%END%
+
+%TESTCASE% Fencing test * + _
+_**a**_ **_a_**
+%EXPECTS%
+<p><em><strong>a</strong></em> <strong><em>a</em></strong></p>
 %END%
 
 %TESTCASE% Paragraph 3 tabs
@@ -1406,14 +1434,6 @@ test
 test
 %EXPECTS%
 <p>test<br/>test</p>
-%END%
-
-%TESTCASE% Code fencing consume test
-```
-test
-```test
-%EXPECTS%
-<pre><code>test</code></pre>
 %END%
 
 %TESTCASE% Different list starts

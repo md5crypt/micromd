@@ -1,6 +1,6 @@
 {
 	"name": "micromd",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "a 3kb fully linear markdown parser",
 	"main": "./cjs/index.js",
 	"module": "./mjs/index.js",

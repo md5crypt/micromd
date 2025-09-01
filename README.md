@@ -24,9 +24,8 @@ This parser offers a fine balance between footprint size and common mark compati
   - code spans (```` `, ``, ``` ````)
     - escaping in code spans does not work
     - inline code blocks don't stop on line breaks
-  - a simple fencing rule is used
-    - utf8 punctuation characters like em-dash do not count as boundaries
-    - `*_a_*` and `_*a*_` do not fence correctly
+  - simplified fencing rules
+    - utf8 punctuation and whitespace characters like em-dash are not handled correctly
 
 * links and images
   - `title` and `ref` not supported
@@ -50,9 +49,12 @@ This parser offers a fine balance between footprint size and common mark compati
 * lists
   - lists can't contain other block elements (header, blockquote, code fence)
   - slightly different indentation rule then commonmark, should never be visible in normal use
+  - changing list type mid list has no effect
+  - setting numeration start works only for first list element
 
 * blockquotes
   - blockquotes can't contain other block elements (header, list, code fence)
+  - blockquotes can not be nested
 
 * code fences
   - only triple backticks ```` ``` ```` are supported
@@ -259,12 +261,8 @@ image link: [![alt text](https://www.google.pl/images/branding/googlelogo/2x/goo
 
 ### Block quotes
 
-> block quote  
-> hey!
-> > **nesting** nesting
-> > > arrrghhh!  
-> > > help!
-> oh, it's ok know
+> block quote!  
+> **hey!** look at _me_
 
 ### Lists
 
